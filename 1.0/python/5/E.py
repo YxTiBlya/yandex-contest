@@ -2,7 +2,7 @@ n, k = map(int, input().split())
 colors = list(map(int, input().split()))
 left = right = 0
 aleft, aright = 0, n
-ans = numsInWindow = 0
+numsInWindow = 0
 dt = {}
 
 while right < n:
