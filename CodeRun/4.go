@@ -11,44 +11,26 @@ func main() {
 	in := bufio.NewReader(os.Stdin)
 	fmt.Fscanf(in, "%d %d\n", &N, &M)
 
-	dp := make([][]int, N+1)
-	dp[0] = make([]int, M+1)
-	prev := make([][]rune, N+1)
+	board := make([][]int, N)
+	for i := range board {
+		board[i] = make([]int, M)
+	}
+	board[0][0] = 1
 
-	var x int
-	for i := 1; i < N+1; i++ {
-		row := make([]int, M+1)
-		prev[i] = append(prev[i], '0')
+	dy := []int{1, 2}
+	dx := []int{2, 1}
 
-		for j := 1; j < M+1; j++ {
-			fmt.Fscan(in, &x)
-
-			if dp[i-1][j] >= row[j-1] {
-				row[j] = x + dp[i-1][j]
-				prev[i] = append(prev[i], 'D')
-			} else {
-				row[j] = x + row[j-1]
-				prev[i] = append(prev[i], 'R')
+	for i := 0; i < N; i++ {
+		for j := 0; j < M; j++ {
+			if board[i][j] > 0 {
+				for delta := 0; delta < 2; delta++ {
+					if i+dy[delta] < N && j+dx[delta] < M {
+						board[i+dy[delta]][j+dx[delta]] += board[i][j]
+					}
+				}
 			}
 		}
-
-		dp[i] = row
 	}
 
-	i, j := N, M
-	var cert []rune
-	for prev[i] != nil {
-		cert = append(cert, prev[i][j])
-
-		if prev[i][j] == 'D' {
-			i--
-		} else {
-			j--
-		}
-	}
-
-	fmt.Println(dp[N][M])
-	for i := len(cert) - 2; i >= 0; i-- {
-		fmt.Print(string(cert[i]), " ")
-	}
+	fmt.Println(board[N-1][M-1])
 }

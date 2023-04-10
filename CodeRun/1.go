@@ -1,32 +1,32 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+	"sort"
+)
 
 func main() {
 	var N int
 	fmt.Scanln(&N)
 
-	dp := make([]int, N+3)
-	nums := make([][]int, N+3)
+	var x int
+	nums := make([]int, N)
 	for i := range nums {
-		nums[i] = []int{0, 0, 0}
+		fmt.Scan(&x)
+		nums[i] = x
+	}
+	sort.Ints(nums)
+
+	dp := make([]int, N+1)
+	dp[2] = nums[1] - nums[0]
+
+	if N > 2 {
+		dp[3] = nums[2] - nums[0]
+		for i := 4; i < N+1; i++ {
+			dp[i] = int(math.Min(float64(dp[i-1]), float64(dp[i-2]))) + nums[i-1] - nums[i-2]
+		}
 	}
 
-	var a, b, c int
-	for i := 3; i < N+3; i++ {
-		fmt.Scanf("%d %d %d\n", &a, &b, &c)
-
-		mn := dp[i-1] + a
-		if dp[i-2]+nums[i-1][1] != 0 && dp[i-2]+nums[i-1][1] < mn {
-			mn = dp[i-2] + nums[i-1][1]
-		}
-		if dp[i-3]+nums[i-2][2] != 0 && dp[i-3]+nums[i-2][2] < mn {
-			mn = dp[i-3] + nums[i-2][2]
-		}
-
-		dp[i] = mn
-		nums[i] = []int{a, b, c}
-	}
-
-	fmt.Println(dp[N+2])
+	fmt.Println(dp[N])
 }
